@@ -19,6 +19,19 @@ int aa_delete(aa * tree, void *data, int (*dup) (void *orig, void *data));
 void *aa_find(aa * tree, void *data);
 /* 0 on no error, 1 on no tree, 2 on bad trav (not one of TRAV_IN, TRAV_POST, TRAV_PRE) */
 int aa_traverse(aa * tree, void *(*func) (void *data), trav t);
+/* NULL on error */
+void *aa_get_here(aa * tree);
+/* 0 on no error, 1 on no tree, 2 on memory error, dup stuff as above; replaces if no dup */
+int aa_set_here(aa * tree, void *data,
+                int (*dup) (void *orig, void *data));
+/* 1 if true, 0 if false, -1 on error */
+int aa_has_left(aa * tree);
+/* 1 if true, 0 if false, -1 on error */
+int aa_has_right(aa * tree);
+/* 0 on no error, 1 on error */
+int aa_go_right(aa * tree);
+/* 0 on no error, 1 on error */
+int aa_go_left(aa * tree);
 /* no-op on error */
 void aa_free(aa * tree);
 
