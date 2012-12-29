@@ -56,8 +56,8 @@ static void error(aa * tree)
 
 static int comparator(void *left, void *right)
 {
-    ll *ll = (ll *) left, *rl = (ll *) right;
-    char *l = get_data(ll), *r = get_data(rl);
+    ll *lfl = (ll *) left, *rl = (ll *) right;
+    char *l = get_data(lfl), *r = get_data(rl);
     int n = strcmp(l, r);
     if (n < 0)
         return -1;
