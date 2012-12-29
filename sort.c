@@ -74,7 +74,7 @@ static int duplicate(void *orig, void *new)
     char *ln;
 
     n = get_tag(node);
-    set_tag(node, n++);
+    set_tag(node, n + 1);
     ln = get_data(node2);
     free(ln);
     free(node2);
