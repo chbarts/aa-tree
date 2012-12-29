@@ -240,3 +240,213 @@ int aa_delete(aa * tree, void *data, int (*dup) (void *orig, void *data),
 
     return 0;
 }
+
+static void *find(struct node *t, void *data, ftype comp)
+{
+    if (t == NULL) {
+        return NULL;
+    }
+
+    if (t->data == NULL) {
+        return NULL;
+    }
+
+    if (comp(data, t->data) == -1) {
+        return find(t->left, data, comp);
+    } else if (comp(data, t->data) == 1) {
+        return find(t->right, data, comp);
+    } else {
+        return t->data;
+    }
+}
+
+void *aa_find(aa * tree, void *data)
+{
+    if (tree == NULL) {
+        return NULL;
+    }
+
+    return find(tree->root, data, tree->comp);
+}
+
+static void preorder(struct node *node, void *(*func) (void *data))
+{
+    node->data = func(node->data);
+
+    if (node->left)
+        preorder(node->left, func);
+
+    if (node->right)
+        preorder(node->right, func);
+}
+
+static void postorder(struct node *node, void *(*func) (void *data))
+{
+    if (node->left)
+        postorder(node->left, func);
+
+    if (node->right)
+        postorder(node->right, func);
+
+    node->data = func(node->data);
+}
+
+static void inorder(struct node *node, void *(*func) (void *data))
+{
+    if (node->left)
+        inorder(node->left, func);
+
+    node->data = func(node->data);
+
+    if (node->right)
+        inorder(node->right, func);
+}
+
+int aa_traverse(aa * tree, void *(*func) (void *data), trav t)
+{
+    if (tree == NULL) {
+        return 1;
+    }
+
+    switch (t) {
+    case TRAV_IN:
+        inorder(tree->root, func);
+        break;
+    case TRAV_POST:
+        postorder(tree->root, func);
+        break;
+    case TRAV_PRE:
+        preorder(tree->root, func);
+        break;
+    default:
+        return 2;
+        break;
+    }
+
+    return 0;
+}
+
+static void *freedata(void *data)
+{
+    free(data);
+    return NULL;
+}
+
+void aa_freedata(aa * tree)
+{
+    if (tree == NULL) {
+        return;
+    }
+
+    preorder(tree->root, freedata);
+}
+
+static void freetree(struct node *node)
+{
+    if (node->left)
+        freetree(node->left);
+
+    if (node->right)
+        freetree(node->right);
+
+    free(node);
+}
+
+void aa_free(aa * tree)
+{
+    if (tree == NULL) {
+        return;
+    }
+
+    freetree(tree->root);
+    free(tree);
+}
+
+void *aa_get_here(aa * tree)
+{
+    if (tree == NULL) {
+        return NULL;
+    }
+
+    return tree->cursor->data;
+}
+
+int aa_set_here(aa * tree, void *data, int (*dup) (void *orig, void *data))
+{
+    if (tree == NULL) {
+        return 1;
+    }
+
+    if (tree->comp(data, tree->cursor->data) == 0) {
+        if (dup != NULL) {
+            if (dup(tree->cursor->data, data) == 0) {
+                return 0;
+            } else {
+                return 4;
+            }
+
+        } else {
+            return 3;
+        }
+
+    } else {
+        tree->cursor->data = data;
+        return 0;
+    }
+}
+
+int aa_has_left(aa * tree)
+{
+    if (tree == NULL) {
+        return -1;
+    } else if (tree->cursor->left == NULL) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+int aa_has_right(aa * tree)
+{
+    if (tree == NULL) {
+        return -1;
+    } else if (tree->cursor->right == NULL) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+int aa_go_left(aa * tree)
+{
+    if (tree == NULL) {
+        return 1;
+    } else if (tree->cursor->left == NULL) {
+        return 1;
+    } else {
+        tree->cursor = tree->cursor->left;
+        return 0;
+    }
+}
+
+int aa_go_right(aa * tree)
+{
+    if (tree == NULL) {
+        return 1;
+    } else if (tree->cursor->right == NULL) {
+        return 1;
+    } else {
+        tree->cursor = tree->cursor->right;
+        return 0;
+    }
+}
+
+int aa_to_root(aa * tree)
+{
+    if (tree == NULL) {
+        return 1;
+    } else {
+        tree->cursor = tree->root;
+        return 0;
+    }
+}

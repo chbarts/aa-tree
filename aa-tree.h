@@ -34,6 +34,10 @@ int aa_has_right(aa * tree);
 int aa_go_right(aa * tree);
 /* 0 on no error, 1 on error */
 int aa_go_left(aa * tree);
+/* 0 on no error, 1 on error */
+int aa_to_root(aa * tree);
+/* no-op on error */
+void aa_freedata(aa * tree);
 /* no-op on error */
 void aa_free(aa * tree);
 
