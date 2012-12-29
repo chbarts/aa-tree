@@ -13,8 +13,10 @@ aa *aa_new(int (*comp) (void *l, void *r));
  * dup returns 0 on no error, 1 on error */
 int aa_add(aa * tree, void *data, int (*dup) (void *orig, void *new));
 /* 0 on no error, 1 on no tree, 2 on dup error
- * dup returns 0 on no error, 1 on error */
-int aa_delete(aa * tree, void *data, int (*dup) (void *orig, void *data));
+ * dup returns 0 on no error, 1 on error 
+ * if del exists, it is applied to the data */
+int aa_delete(aa * tree, void *data, int (*dup) (void *orig, void *data),
+              void (*del) (void *));
 /* NULL on error or not found */
 void *aa_find(aa * tree, void *data);
 /* 0 on no error, 1 on no tree, 2 on bad trav (not one of TRAV_IN, TRAV_POST, TRAV_PRE) */
