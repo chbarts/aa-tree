@@ -87,7 +87,7 @@ static void dofile(char *fname, FILE * fin, aa * tree)
     ll *lln;
 
     while (fggets(&ln, fin) == 0) {
-        if ((lln = new_node(0, ln, NULL)) == NULL) {
+        if ((lln = new_node(1, ln, NULL)) == NULL) {
             free(ln);
             error(tree);
         }
