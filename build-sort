@@ -1,0 +1,1 @@
+cc -Os -ansi -Wall ggets.o handle_ferr.o aa-tree.o sort.c -o sort
