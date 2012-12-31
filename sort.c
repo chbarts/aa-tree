@@ -136,7 +136,6 @@ static void version(void)
     puts("sort comes with NO WARRANTY to the extent permitted by law.");
     puts("You may redistribute this software under the terms");
     puts("of the GNU General Public License.");
-    puts("All other files are in the public domain.");
     puts("For more information, see the file named COPYING");
     puts("in this program's distribution file.");
 }
