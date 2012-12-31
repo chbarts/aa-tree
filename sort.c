@@ -131,7 +131,7 @@ static void dofile(char *fname, FILE * fin, aa * tree)
 
 static void version(void)
 {
-    puts("sort version 0.3");
+    puts("sort version 0.3.1");
     puts("Copyright 2012 Chris Barts.");
     puts("sort comes with NO WARRANTY to the extent permitted by law.");
     puts("You may redistribute this software under the terms");
