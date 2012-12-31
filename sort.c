@@ -176,7 +176,7 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 
-        dofile(stdin, "stdin", tree);
+        dofile("stdin", stdin, tree);
         aa_traverse(tree, printall, TRAV_IN);
         cleanup(tree);
         return 0;
