@@ -1,6 +1,8 @@
 #ifndef AA_TREE_H
 #define AA_TREE_H
 
+#include <stdio.h>
+
 typedef enum trav { TRAV_IN, TRAV_POST, TRAV_PRE } trav;
 typedef struct aa aa;
 
