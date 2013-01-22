@@ -5,10 +5,10 @@
 #include "handle_ferr.h"
 #include "aa-tree.h"
 
-static void print(void *data)
+static void print(FILE *fp, void *data)
 {
     char *ln = (char *) data;
-    printf(ln);
+    fprintf(fp, "%s", ln);
 }
 
 static void cleanup(aa * tree)

@@ -457,7 +457,7 @@ static void tree_print(struct node *node, unsigned long long int n,
     unsigned long long int pn = n / 2;
 
     fprintf(fp, "node%llu [label = \"<f0> | <f1> ", n);
-    printer(node->data);
+    printer(fp, node->data);
     fprintf(fp, "|<f2> \"];\n");
 
     if (pn != 0) {
@@ -475,7 +475,7 @@ static void tree_print(struct node *node, unsigned long long int n,
         tree_print(node->right, 2 * n + 1, printer, fp);
 }
 
-int aa_print(aa * tree, FILE * fp, void (*printer) (void *))
+int aa_print(aa * tree, FILE * fp, void (*printer) (FILE *, void *))
 {
     if (!tree)
         return -1;
