@@ -473,7 +473,7 @@ int aa_print(aa * tree, FILE * fp, void (*printer) (void *))
     if (!tree)
         return -1;
 
-    fprintf(fp, "digraph aa-tree {\n");
+    fprintf(fp, "digraph aa_tree {\n");
     fprintf(fp, "node0 [label = \"pseudo-node 0\"];\n");
     tree_print(tree->root, 1, printer, fp);
     fprintf(fp, "}\n");
