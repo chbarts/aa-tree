@@ -456,10 +456,17 @@ static void tree_print(struct node *node, unsigned long long int n,
 {
     unsigned long long int pn = n / 2;
 
-    fprintf(fp, "node%llu [label = \"", n);
+    fprintf(fp, "node%llu [label = \"<f0> | <f1> ", n);
     printer(node->data);
-    fprintf(fp, "\"];\n");
-    fprintf(fp, "node%llu -> node%llu;\n", pn, n);
+    fprintf(fp, "|<f2> \"];\n");
+
+    if (pn != 0) {
+        if (n % 2 == 0) {
+            fprintf(fp, "\"node%llu\":f0 -> \"node%llu\":f1;\n", pn, n);
+        } else {
+            fprintf(fp, "\"node%llu\":f2 -> \"node%llu\":f1;\n", pn, n);
+        }
+    }
 
     if (node->left)
         tree_print(node->left, 2 * n, printer, fp);
@@ -474,7 +481,7 @@ int aa_print(aa * tree, FILE * fp, void (*printer) (void *))
         return -1;
 
     fprintf(fp, "digraph aa_tree {\n");
-    fprintf(fp, "node0 [label = \"pseudo-node 0\"];\n");
+    fprintf(fp, "node [shape = record];\n");
     tree_print(tree->root, 1, printer, fp);
     fprintf(fp, "}\n");
 
