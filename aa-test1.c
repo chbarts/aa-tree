@@ -5,11 +5,10 @@
 #include "handle_ferr.h"
 #include "aa-tree.h"
 
-static void *print(void *data)
+static void print(void *data)
 {
     char *ln = (char *) data;
-    puts(ln);
-    return data;
+    printf(ln);
 }
 
 static void cleanup(aa * tree)
@@ -96,12 +95,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    puts("Preorder:");
-    aa_traverse(tree, print, TRAV_PRE);
-    puts("Inorder:");
-    aa_traverse(tree, print, TRAV_IN);
-    puts("Postorder:");
-    aa_traverse(tree, print, TRAV_POST);
+    aa_print(tree, stdout, print);
 
     cleanup(tree);
     return 0;
