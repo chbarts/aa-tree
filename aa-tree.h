@@ -40,5 +40,7 @@ int aa_to_root(aa * tree);
 void aa_freedata(aa * tree);
 /* no-op on error */
 void aa_free(aa * tree);
+/* 0 on no error, -1 on no tree */
+int aa_print(aa * tree, FILE * fp, void (*printer) (void *));
 
 #endif                          /* AA_TREE_H */

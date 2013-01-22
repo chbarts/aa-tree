@@ -450,3 +450,33 @@ int aa_to_root(aa * tree)
         return 0;
     }
 }
+
+static void tree_print(struct node *node, unsigned long long int n,
+                       void (*printer) (void *), FILE * fp)
+{
+    unsigned long long int pn = n / 2;
+
+    fprintf(fp, "node%llu [label = \"", n);
+    printer(node->data);
+    fprintf(fp, "\"];\n");
+    fprintf(fp, "node%llu -> node%llu;\n", pn, n);
+
+    if (node->left)
+        tree_print(node->left, 2 * n, printer, fp);
+
+    if (node->right)
+        tree_print(node->right, 2 * n + 1, printer, fp);
+}
+
+int aa_print(aa * tree, FILE * fp, void (*printer) (void *))
+{
+    if (!tree)
+        return -1;
+
+    fwrite(fp, "digraph aa-tree {\n");
+    fwrite(fp, "node0 [label = \"pseudo-node 0\"];\n");
+    tree_print(tree->root, 1, printer, fp);
+    fwrite(fp, "}\n");
+
+    return 0;
+}
