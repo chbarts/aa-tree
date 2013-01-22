@@ -452,7 +452,7 @@ int aa_to_root(aa * tree)
 }
 
 static void tree_print(struct node *node, unsigned long long int n,
-                       void (*printer) (void *), FILE * fp)
+                       void (*printer) (FILE *, void *), FILE * fp)
 {
     unsigned long long int pn = n / 2;
 
