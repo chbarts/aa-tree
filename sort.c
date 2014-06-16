@@ -1,12 +1,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #define _GNU_SOURCE             /* Enable getopt_long(). */
 #include <getopt.h>
 #include "ggets.h"
 #include "handle_ferr.h"
 #include "aa-tree.h"
 #include "ll3.h"
+
+typedef struct {
+   long long num;
+   aa *tree;
+} tstruct;
 
 static void *print(void *data)
 {
@@ -16,6 +22,13 @@ static void *print(void *data)
     ln = get_data(node);
     puts(ln);
     return data;
+}
+
+static void *printn(void *data)
+{
+   tstruct *tstr = (tstruct *) data;
+   aa_traverse(tstr->tree, print, TRAV_IN);
+   return data;
 }
 
 static void *printall(void *data)
@@ -32,6 +45,23 @@ static void *printall(void *data)
     return data;
 }
 
+static void *printalln(void *data)
+{
+   tstruct *tstr = (tstruct *) data;
+   aa_traverse(tstr->tree, printall, TRAV_IN);
+   return data;
+}
+
+static void cleanup(aa * tree, bool numer);
+
+static void *freedatan(void *data)
+{
+   tstruct *node = (tstruct *) data;
+   cleanup(node->tree, false);
+   free(node);
+   return NULL;
+}
+
 static void *freedata(void *data)
 {
     ll *node = (ll *) data;
@@ -43,16 +73,21 @@ static void *freedata(void *data)
     return NULL;
 }
 
-static void cleanup(aa * tree)
+static void cleanup(aa * tree, bool numer)
 {
-    aa_traverse(tree, freedata, TRAV_IN);
+   if (numer) {
+      aa_traverse(tree, freedatan, TRAV_IN);
+   } else {
+      aa_traverse(tree, freedata, TRAV_IN);
+   }
+
     aa_free(tree);
 }
 
-static void error(aa * tree)
+static void error(aa * tree, bool numer)
 {
     fprintf(stderr, "memory error\n");
-    cleanup(tree);
+    cleanup(tree, numer);
     exit(EXIT_FAILURE);
 }
 
@@ -69,6 +104,18 @@ static int comparator(void *left, void *right)
         return 0;
 }
 
+static int ncomparator(void *left, void *right)
+{
+   tstruct *lv = (tstruct *) left, *rv = (tstruct *) right;
+
+   if (lv->num < rv->num)
+      return -1;
+   else if (lv->num > rv->num)
+      return 1;
+   else
+      return 0;
+}
+
 static int rcomparator(void *left, void *right)
 {
     ll *lfl = (ll *) left, *rl = (ll *) right;
@@ -80,6 +127,18 @@ static int rcomparator(void *left, void *right)
         return -1;
     else
         return 0;
+}
+
+static int rncomparator(void *left, void *right)
+{
+   tstruct *lv = (tstruct *) left, *rv = (tstruct *) right;
+
+   if (lv->num < rv->num)
+      return 1;
+   else if (lv->num > rv->num)
+      return -1;
+   else
+      return 0;
 }
 
 static int duplicate(void *orig, void *new)
@@ -96,30 +155,104 @@ static int duplicate(void *orig, void *new)
     return 0;
 }
 
-static void dofile(char *fname, FILE * fin, aa * tree)
+static int nduplicate(void *orig, void *new)
+{
+   ll *val;
+   tstruct *node = (tstruct *) orig, *node2 = (tstruct *) new;
+   aa *ttree;
+
+   aa_to_root(node2->tree);
+   val = aa_get_here(node2->tree);
+   ttree = node->tree;
+
+   switch (aa_add(node->tree, val, duplicate)) {
+   case 0:
+      break;
+   case 2:                /* memory error */
+      free(node);
+      cleanup(node2->tree, false);
+      free(node2);
+      error(ttree, false);
+      break;
+   default:               /* can't happen */
+      fprintf(stderr, "can't happen\n");
+      free(node);
+      cleanup(ttree, false);
+      cleanup(node2->tree, false);
+      free(node2);
+      exit(EXIT_FAILURE);
+      break;
+   }
+
+   aa_free(node2->tree);
+   free(node2);
+
+   return 0;
+}
+
+static void dofile(char *fname, FILE * fin, aa * tree, bool numer, bool rev)
 {
     char *ln;
     ll *lln;
+    tstruct *tstr = NULL;
 
     while (fggets(&ln, fin) == 0) {
         if ((lln = new_node(1, ln, NULL)) == NULL) {
             free(ln);
-            error(tree);
+            error(tree, numer);
         }
 
-        switch (aa_add(tree, lln, duplicate)) {
+        if (numer) {
+           if ((tstr = malloc(sizeof(tstruct))) == NULL) {
+              free(ln);
+              free(lln);
+              error(tree, numer);
+           }
+
+           tstr->num = atoll(ln);
+
+           if ((tstr->tree = aa_new(rev ? rcomparator : comparator)) == NULL) {
+              free(ln);
+              free(lln);
+              free(tstr);
+              error(tree, numer);
+           }
+
+           switch (aa_add(tstr->tree, lln, duplicate)) {
+           case 0:
+              break;
+           case 2:                /* memory error */
+              free(ln);
+              free(lln);
+              free(tstr);
+              error(tree, numer);
+              break;
+           default:               /* can't happen */
+              fprintf(stderr, "can't happen\n");
+              free(ln);
+              free(lln);
+              free(tstr);
+              cleanup(tree, numer);
+              exit(EXIT_FAILURE);
+              break;
+           }
+        }
+
+        switch (aa_add(tree, numer ? (void*) tstr : (void*) lln, numer ? nduplicate : duplicate)) {
         case 0:                /* no error */
             break;
         case 2:                /* memory error */
             free(ln);
             free(lln);
-            error(tree);
+            free(tstr);
+            error(tree, numer);
             break;
         default:               /* can't happen */
             fprintf(stderr, "can't happen\n");
             free(ln);
             free(lln);
-            cleanup(tree);
+            free(tstr);
+            cleanup(tree, numer);
             exit(EXIT_FAILURE);
             break;
         }
@@ -131,8 +264,8 @@ static void dofile(char *fname, FILE * fin, aa * tree)
 
 static void version(void)
 {
-    puts("sort version 0.3.1");
-    puts("Copyright 2012 Chris Barts.");
+    puts("sort version 0.5.0");
+    puts("Copyright 2014 Chris Barts.");
     puts("sort comes with NO WARRANTY to the extent permitted by law.");
     puts("You may redistribute this software under the terms");
     puts("of the GNU General Public License.");
@@ -159,11 +292,13 @@ int main(int argc, char *argv[])
     aa *tree;
     char *pnam;
     FILE *fin;
-    int i, u = 0, r = 0, lind, c;
+    int i, lind, c;
+    bool uniq = false, rev = false, numer = false;
     extern int optind;
     struct option longopts[] = {
         {"uniqify", 0, 0, 0},
         {"reverse", 0, 0, 0},
+        {"numer", 0, 0, 0},
         {"help", 0, 0, 0},
         {"version", 0, 0, 0},
         {0, 0, 0, 0}
@@ -175,29 +310,32 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 
-        dofile("stdin", stdin, tree);
+        dofile("stdin", stdin, tree, false, false);
         aa_traverse(tree, printall, TRAV_IN);
-        cleanup(tree);
+        cleanup(tree, numer);
         return 0;
     }
 
     pnam = argv[0];
 
-    while ((c = getopt_long(argc, argv, "urhv", longopts, &lind)) != -1) {
+    while ((c = getopt_long(argc, argv, "urnhv", longopts, &lind)) != -1) {
         switch (c) {
         case 0:
             switch (lind) {
             case 0:
-                u = 1;
+                uniq = true;
                 break;
             case 1:
-                r = 1;
+                rev = true;
                 break;
             case 2:
+               numer = true;
+               break;
+            case 3:
                 usage(pnam);
                 return 0;
                 break;
-            case 3:
+            case 4:
                 version();
                 return 0;
                 break;
@@ -209,11 +347,14 @@ int main(int argc, char *argv[])
 
             break;
         case 'u':
-            u = 1;
+            uniq = true;
             break;
         case 'r':
-            r = 1;
+            rev = true;
             break;
+        case 'n':
+           numer = true;
+           break;
         case 'h':
             usage(pnam);
             return 0;
@@ -229,7 +370,17 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (r == 1) {
+    if (rev && numer) {
+        if ((tree = aa_new(rncomparator)) == NULL) {
+            fprintf(stderr, "aa_new error\n");
+            exit(EXIT_FAILURE);
+        }
+    } else if (numer) {
+        if ((tree = aa_new(ncomparator)) == NULL) {
+            fprintf(stderr, "aa_new error\n");
+            exit(EXIT_FAILURE);
+        }
+    } else if (rev) {
         if ((tree = aa_new(rcomparator)) == NULL) {
             fprintf(stderr, "aa_new error\n");
             exit(EXIT_FAILURE);
@@ -242,7 +393,7 @@ int main(int argc, char *argv[])
     }
 
     if (optind >= argc) {
-        dofile("stdin", stdin, tree);
+       dofile("stdin", stdin, tree, numer, rev);
     } else {
         for (i = optind; i < argc; i++) {
             if ((fin = fopen(argv[i], "rb")) == NULL) {
@@ -250,7 +401,7 @@ int main(int argc, char *argv[])
                 continue;
             }
 
-            dofile(argv[i], fin, tree);
+            dofile(argv[i], fin, tree, numer, rev);
 
             if (fclose(fin) == EOF) {
                 handle_ferr(argv[i], "sort");
@@ -258,12 +409,16 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (u == 1) {
-        aa_traverse(tree, print, TRAV_IN);
+    if (uniq && numer) {
+        aa_traverse(tree, printn, TRAV_IN);
+    } else if (uniq) {
+       aa_traverse(tree, print, TRAV_IN);
+    } else if (numer) {
+       aa_traverse(tree, printalln, TRAV_IN);
     } else {
         aa_traverse(tree, printall, TRAV_IN);
     }
 
-    cleanup(tree);
+    cleanup(tree, numer);
     return 0;
 }
