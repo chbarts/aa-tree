@@ -10,8 +10,8 @@
 #include "ll3.h"
 
 typedef struct {
-   long long num;
-   aa *tree;
+    long long num;
+    aa *tree;
 } tstruct;
 
 static void *print(void *data)
@@ -26,9 +26,9 @@ static void *print(void *data)
 
 static void *printn(void *data)
 {
-   tstruct *tstr = (tstruct *) data;
-   aa_traverse(tstr->tree, print, TRAV_IN);
-   return data;
+    tstruct *tstr = (tstruct *) data;
+    aa_traverse(tstr->tree, print, TRAV_IN);
+    return data;
 }
 
 static void *printall(void *data)
@@ -47,19 +47,19 @@ static void *printall(void *data)
 
 static void *printalln(void *data)
 {
-   tstruct *tstr = (tstruct *) data;
-   aa_traverse(tstr->tree, printall, TRAV_IN);
-   return data;
+    tstruct *tstr = (tstruct *) data;
+    aa_traverse(tstr->tree, printall, TRAV_IN);
+    return data;
 }
 
 static void cleanup(aa * tree, bool numer);
 
 static void *freedatan(void *data)
 {
-   tstruct *node = (tstruct *) data;
-   cleanup(node->tree, false);
-   free(node);
-   return NULL;
+    tstruct *node = (tstruct *) data;
+    cleanup(node->tree, false);
+    free(node);
+    return NULL;
 }
 
 static void *freedata(void *data)
@@ -75,11 +75,11 @@ static void *freedata(void *data)
 
 static void cleanup(aa * tree, bool numer)
 {
-   if (numer) {
-      aa_traverse(tree, freedatan, TRAV_IN);
-   } else {
-      aa_traverse(tree, freedata, TRAV_IN);
-   }
+    if (numer) {
+        aa_traverse(tree, freedatan, TRAV_IN);
+    } else {
+        aa_traverse(tree, freedata, TRAV_IN);
+    }
 
     aa_free(tree);
 }
@@ -106,14 +106,14 @@ static int comparator(void *left, void *right)
 
 static int ncomparator(void *left, void *right)
 {
-   tstruct *lv = (tstruct *) left, *rv = (tstruct *) right;
+    tstruct *lv = (tstruct *) left, *rv = (tstruct *) right;
 
-   if (lv->num < rv->num)
-      return -1;
-   else if (lv->num > rv->num)
-      return 1;
-   else
-      return 0;
+    if (lv->num < rv->num)
+        return -1;
+    else if (lv->num > rv->num)
+        return 1;
+    else
+        return 0;
 }
 
 static int rcomparator(void *left, void *right)
@@ -131,14 +131,14 @@ static int rcomparator(void *left, void *right)
 
 static int rncomparator(void *left, void *right)
 {
-   tstruct *lv = (tstruct *) left, *rv = (tstruct *) right;
+    tstruct *lv = (tstruct *) left, *rv = (tstruct *) right;
 
-   if (lv->num < rv->num)
-      return 1;
-   else if (lv->num > rv->num)
-      return -1;
-   else
-      return 0;
+    if (lv->num < rv->num)
+        return 1;
+    else if (lv->num > rv->num)
+        return -1;
+    else
+        return 0;
 }
 
 static int duplicate(void *orig, void *new)
@@ -157,40 +157,41 @@ static int duplicate(void *orig, void *new)
 
 static int nduplicate(void *orig, void *new)
 {
-   ll *val;
-   tstruct *node = (tstruct *) orig, *node2 = (tstruct *) new;
-   aa *ttree;
+    ll *val;
+    tstruct *node = (tstruct *) orig, *node2 = (tstruct *) new;
+    aa *ttree;
 
-   aa_to_root(node2->tree);
-   val = aa_get_here(node2->tree);
-   ttree = node->tree;
+    aa_to_root(node2->tree);
+    val = aa_get_here(node2->tree);
+    ttree = node->tree;
 
-   switch (aa_add(node->tree, val, duplicate)) {
-   case 0:
-      break;
-   case 2:                /* memory error */
-      free(node);
-      cleanup(node2->tree, false);
-      free(node2);
-      error(ttree, false);
-      break;
-   default:               /* can't happen */
-      fprintf(stderr, "can't happen\n");
-      free(node);
-      cleanup(ttree, false);
-      cleanup(node2->tree, false);
-      free(node2);
-      exit(EXIT_FAILURE);
-      break;
-   }
+    switch (aa_add(node->tree, val, duplicate)) {
+    case 0:
+        break;
+    case 2:                    /* memory error */
+        free(node);
+        cleanup(node2->tree, false);
+        free(node2);
+        error(ttree, false);
+        break;
+    default:                   /* can't happen */
+        fprintf(stderr, "can't happen\n");
+        free(node);
+        cleanup(ttree, false);
+        cleanup(node2->tree, false);
+        free(node2);
+        exit(EXIT_FAILURE);
+        break;
+    }
 
-   aa_free(node2->tree);
-   free(node2);
+    aa_free(node2->tree);
+    free(node2);
 
-   return 0;
+    return 0;
 }
 
-static void dofile(char *fname, FILE * fin, aa * tree, bool numer, bool rev)
+static void dofile(char *fname, FILE * fin, aa * tree, bool numer,
+                   bool rev)
 {
     char *ln;
     ll *lln;
@@ -203,42 +204,45 @@ static void dofile(char *fname, FILE * fin, aa * tree, bool numer, bool rev)
         }
 
         if (numer) {
-           if ((tstr = malloc(sizeof(tstruct))) == NULL) {
-              free(ln);
-              free(lln);
-              error(tree, numer);
-           }
+            if ((tstr = malloc(sizeof(tstruct))) == NULL) {
+                free(ln);
+                free(lln);
+                error(tree, numer);
+            }
 
-           tstr->num = atoll(ln);
+            tstr->num = atoll(ln);
 
-           if ((tstr->tree = aa_new(rev ? rcomparator : comparator)) == NULL) {
-              free(ln);
-              free(lln);
-              free(tstr);
-              error(tree, numer);
-           }
+            if ((tstr->tree =
+                 aa_new(rev ? rcomparator : comparator)) == NULL) {
+                free(ln);
+                free(lln);
+                free(tstr);
+                error(tree, numer);
+            }
 
-           switch (aa_add(tstr->tree, lln, duplicate)) {
-           case 0:
-              break;
-           case 2:                /* memory error */
-              free(ln);
-              free(lln);
-              free(tstr);
-              error(tree, numer);
-              break;
-           default:               /* can't happen */
-              fprintf(stderr, "can't happen\n");
-              free(ln);
-              free(lln);
-              free(tstr);
-              cleanup(tree, numer);
-              exit(EXIT_FAILURE);
-              break;
-           }
+            switch (aa_add(tstr->tree, lln, duplicate)) {
+            case 0:
+                break;
+            case 2:            /* memory error */
+                free(ln);
+                free(lln);
+                free(tstr);
+                error(tree, numer);
+                break;
+            default:           /* can't happen */
+                fprintf(stderr, "can't happen\n");
+                free(ln);
+                free(lln);
+                free(tstr);
+                cleanup(tree, numer);
+                exit(EXIT_FAILURE);
+                break;
+            }
         }
 
-        switch (aa_add(tree, numer ? (void*) tstr : (void*) lln, numer ? nduplicate : duplicate)) {
+        switch (aa_add
+                (tree, numer ? (void *) tstr : (void *) lln,
+                 numer ? nduplicate : duplicate)) {
         case 0:                /* no error */
             break;
         case 2:                /* memory error */
@@ -330,8 +334,8 @@ int main(int argc, char *argv[])
                 rev = true;
                 break;
             case 2:
-               numer = true;
-               break;
+                numer = true;
+                break;
             case 3:
                 usage(pnam);
                 return 0;
@@ -354,8 +358,8 @@ int main(int argc, char *argv[])
             rev = true;
             break;
         case 'n':
-           numer = true;
-           break;
+            numer = true;
+            break;
         case 'h':
             usage(pnam);
             return 0;
@@ -394,7 +398,7 @@ int main(int argc, char *argv[])
     }
 
     if (optind >= argc) {
-       dofile("stdin", stdin, tree, numer, rev);
+        dofile("stdin", stdin, tree, numer, rev);
     } else {
         for (i = optind; i < argc; i++) {
             if ((fin = fopen(argv[i], "rb")) == NULL) {
@@ -413,9 +417,9 @@ int main(int argc, char *argv[])
     if (uniq && numer) {
         aa_traverse(tree, printn, TRAV_IN);
     } else if (uniq) {
-       aa_traverse(tree, print, TRAV_IN);
+        aa_traverse(tree, print, TRAV_IN);
     } else if (numer) {
-       aa_traverse(tree, printalln, TRAV_IN);
+        aa_traverse(tree, printalln, TRAV_IN);
     } else {
         aa_traverse(tree, printall, TRAV_IN);
     }
