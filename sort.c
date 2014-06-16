@@ -281,6 +281,7 @@ static void usage(char *pname)
     puts("");
     puts("  -u, --uniqify     Only print identical lines once");
     puts("  -r, --reverse     Reverse the sense of the comparison");
+    puts("  -n, --numer       Sort numerically, then non-numerically");
     puts("  -h, --help        Print this help");
     puts("  -v, --version     Print version information");
     puts("");
