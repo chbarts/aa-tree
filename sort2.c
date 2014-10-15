@@ -116,7 +116,7 @@ static int rev;
 
 static int sncomp(char *left, char *right)
 {
-    long int nl, nr;
+    long long int nl, nr;
     char *clo, *cro;
     int r = 0;
 
