@@ -1,4 +1,4 @@
-#define _GNU_SOURCE
+/* #define _GNU_SOURCE */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -8,7 +8,7 @@
 #include "ll3.h"
 #include "ggets.h"
 #include "aa-tree.h"
-/* #include "asprintf.h" */
+#include "asprintf.h"
 #include "handle_ferr.h"
 
 static void *print(void *data)
