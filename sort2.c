@@ -201,6 +201,10 @@ static void dofile(char *fname, FILE * fin, aa * tree, bool bylen)
     ll *lln;
 
     while (fggets(&ln, fin) == 0) {
+#ifdef DEBUG
+       fprintf(stderr, "read: %s\n", ln);
+#endif
+
         if (bylen) {
             if (asprintf
                 (&lnl, "%llu:%s", (unsigned long long int) strlen(ln),
