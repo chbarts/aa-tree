@@ -125,7 +125,7 @@ static int sncomp(char *left, char *right)
 
     if (nl < nr) {
         r = -1;
-    } else if (nr > nl) {
+    } else if (nl > nr) {
         r = 1;
     } else {
         r = strcmp(clo, cro);
