@@ -174,11 +174,20 @@ static int lncomparator(void *left, void *right)
 static int comparator(void *left, void *right)
 {
     char *cl, *cr;
+    int r;
 
     cl = (char *) get_data((ll *) left);
     cr = (char *) get_data((ll *) right);
 
-    return rev * strcmp(cl, cr);
+    r = strcmp(cl, cr);
+
+    if (r > 0) {
+       r = 1;
+    } else if (r < 0) {
+       r = -1;
+    }
+
+    return (rev * r);
 }
 
 static int duplicate(void *orig, void *new)
@@ -202,7 +211,7 @@ static void dofile(char *fname, FILE * fin, aa * tree, bool bylen)
 
     while (fggets(&ln, fin) == 0) {
 #ifdef DEBUG
-       fprintf(stderr, "read: %s\n", ln);
+       printf("read: %s\n", ln);
 #endif
 
         if (bylen) {
@@ -215,6 +224,9 @@ static void dofile(char *fname, FILE * fin, aa * tree, bool bylen)
 
             free(ln);
             ln = lnl;
+#ifdef DEBUG
+            printf("%s\n", ln);
+#endif
         }
 
         if ((lln = new_node(1, ln, NULL)) == NULL) {
@@ -264,7 +276,9 @@ int main(int argc, char *argv[])
 
     rev = 1;
 
+#ifdef DEBUG
     printf("rev = %d\n", rev);
+#endif
 
     if (argc == 1) {
         if ((tree = aa_new(comparator)) == NULL) {
