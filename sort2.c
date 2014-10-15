@@ -182,9 +182,9 @@ static int comparator(void *left, void *right)
     r = strcmp(cl, cr);
 
     if (r > 0) {
-       r = 1;
+        r = 1;
     } else if (r < 0) {
-       r = -1;
+        r = -1;
     }
 
     return (rev * r);
@@ -211,7 +211,7 @@ static void dofile(char *fname, FILE * fin, aa * tree, bool bylen)
 
     while (fggets(&ln, fin) == 0) {
 #ifdef DEBUG
-       printf("read: %s\n", ln);
+        printf("read: %s\n", ln);
 #endif
 
         if (bylen) {
