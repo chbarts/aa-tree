@@ -1,4 +1,4 @@
-CFLAGS = -O3 -g -Wall -ansi -pedantic -std=c99
+CFLAGS = -O3 -g -Wall -ansi -pedantic -std=c99 -march=native
 
 CC = gcc
 
