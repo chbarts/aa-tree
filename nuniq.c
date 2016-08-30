@@ -71,7 +71,7 @@ static int comparator(void *left, void *right)
     return r;
 }
 
-static int print = 1;
+volatile int print = 1;
 
 static int duplicate(void *orig, void *new)
 {
@@ -174,8 +174,8 @@ int main(int argc, char *argv[])
     }
 
     if ((tree = aa_new(comparator)) == NULL) {
-       fprintf(stderr, "aa_new() error\n");
-       exit(EXIT_FAILURE);
+        fprintf(stderr, "aa_new() error\n");
+        exit(EXIT_FAILURE);
     }
 
     if (optind >= argc) {
