@@ -44,6 +44,7 @@ static void usage(char *pname)
 {
     printf("Usage: %s [OPTION] [FILE...]\n", pname);
     puts("Print uniqified version of file(s) to standard output without sorting them.");
+    puts("Only prints lines unique to all of the files, if multiple are specified, and doesn't separate by file");
     puts("With no files specified, uniqify standard input.");
     puts("");
     puts("  -h, --help        Print this help");
