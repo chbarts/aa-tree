@@ -88,7 +88,7 @@ static void version(void)
 {
     puts("sort2 version 0.1.0");
     puts("Copyright 2014 Chris Barts.");
-    puts("sort comes with NO WARRANTY to the extent permitted by law.");
+    puts("sort2 comes with NO WARRANTY to the extent permitted by law.");
     puts("You may redistribute this software under the terms");
     puts("of the GNU General Public License.");
     puts("For more information, see the file named COPYING");
@@ -376,14 +376,14 @@ int main(int argc, char *argv[])
     } else {
         for (i = optind; i < argc; i++) {
             if ((fin = fopen(argv[i], "rb")) == NULL) {
-                handle_ferr(argv[i], "sort");
+                handle_ferr(argv[i], "sort2");
                 continue;
             }
 
             dofile(argv[i], fin, tree, bylen);
 
             if (fclose(fin) == EOF) {
-                handle_ferr(argv[i], "sort");
+                handle_ferr(argv[i], "sort2");
             }
         }
     }
