@@ -380,6 +380,10 @@ void *aa_get_here(aa * tree)
         return NULL;
     }
 
+    if (tree->cursor == NULL) {
+        return NULL;
+    }
+
     return tree->cursor->data;
 }
 
@@ -387,6 +391,10 @@ int aa_set_here(aa * tree, void *data, int (*dup) (void *orig, void *data))
 {
     if (tree == NULL) {
         return 1;
+    }
+
+    if (tree->cursor == NULL) {
+        return 2;
     }
 
     if (tree->comp(data, tree->cursor->data) == 0) {
@@ -411,7 +419,7 @@ int aa_has_left(aa * tree)
 {
     if (tree == NULL) {
         return -1;
-    } else if (tree->cursor->left == NULL) {
+    } else if ((tree->cursor == NULL) || (tree->cursor->left == NULL)) {
         return 0;
     } else {
         return 1;
@@ -422,7 +430,7 @@ int aa_has_right(aa * tree)
 {
     if (tree == NULL) {
         return -1;
-    } else if (tree->cursor->right == NULL) {
+    } else if ((tree->cursor == NULL) || (tree->cursor->right == NULL)) {
         return 0;
     } else {
         return 1;
@@ -433,7 +441,7 @@ int aa_go_left(aa * tree)
 {
     if (tree == NULL) {
         return 1;
-    } else if (tree->cursor->left == NULL) {
+    } else if ((tree->cursor == NULL) || (tree->cursor->left == NULL)) {
         return 1;
     } else {
         tree->cursor = tree->cursor->left;
@@ -445,7 +453,7 @@ int aa_go_right(aa * tree)
 {
     if (tree == NULL) {
         return 1;
-    } else if (tree->cursor->right == NULL) {
+    } else if ((tree->cursor == NULL) || (tree->cursor->right == NULL)) {
         return 1;
     } else {
         tree->cursor = tree->cursor->right;
@@ -491,6 +499,9 @@ int aa_print(aa * tree, FILE * fp, void (*printer) (FILE *, void *))
 {
     if (!tree)
         return -1;
+
+    if (tree->root == NULL)
+        return -2;
 
     fprintf(fp, "digraph aa_tree {\n");
     fprintf(fp, "node [shape = record];\n");

@@ -25,7 +25,7 @@ void *aa_find(aa * tree, void *data);
 int aa_traverse(aa * tree, void *(*func) (void *data), trav t);
 /* NULL on error */
 void *aa_get_here(aa * tree);
-/* 0 on no error, 1 on no tree, 2 on memory error, dup stuff as above; replaces if no dup */
+/* 0 on no error, 1 on no tree, 2 on empty tree, dup stuff as above; replaces if no dup */
 int aa_set_here(aa * tree, void *data,
                 int (*dup) (void *orig, void *data));
 /* 1 if true, 0 if false, -1 on error */
@@ -42,7 +42,7 @@ int aa_to_root(aa * tree);
 void aa_freedata(aa * tree);
 /* no-op on error */
 void aa_free(aa * tree);
-/* 0 on no error, -1 on no tree */
+/* 0 on no error, -1 on no tree, -2 on empty tree */
 int aa_print(aa * tree, FILE * fp, void (*printer) (FILE *, void *));
 
 #endif                          /* AA_TREE_H */
