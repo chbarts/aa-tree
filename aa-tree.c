@@ -343,6 +343,9 @@ void aa_freedata(aa * tree)
 
 static void freetree(struct node *node)
 {
+    if (node == NULL)
+        return;
+
     if (node->left)
         freetree(node->left);
 
