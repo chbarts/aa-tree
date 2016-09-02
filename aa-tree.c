@@ -271,6 +271,9 @@ void *aa_find(aa * tree, void *data)
 
 static void preorder(struct node *node, void *(*func) (void *data))
 {
+    if (node == NULL)
+        return;
+
     node->data = func(node->data);
 
     if (node->left)
@@ -282,6 +285,9 @@ static void preorder(struct node *node, void *(*func) (void *data))
 
 static void postorder(struct node *node, void *(*func) (void *data))
 {
+    if (node == NULL)
+        return;
+
     if (node->left)
         postorder(node->left, func);
 
@@ -293,6 +299,9 @@ static void postorder(struct node *node, void *(*func) (void *data))
 
 static void inorder(struct node *node, void *(*func) (void *data))
 {
+    if (node == NULL)
+        return;
+
     if (node->left)
         inorder(node->left, func);
 
