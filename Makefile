@@ -22,19 +22,19 @@ nuniq: $(OBJS) nuniq.o
 	$(CC) $(OBJS) nuniq.o -o nuniq
 
 sort2-wp: $(SRCS) asprintf.c ll3.c sort2.c
-	$(CC) $(SRCS) asprintf.c ll3.c sort2.c -o sort2-wp -fwhole-program -flto
+	$(CC) $(SRCS) $(CFLAGS) asprintf.c ll3.c sort2.c -o sort2-wp -fwhole-program -flto
 
 sort: $(OBJS) ll3.o sort.o
 	$(CC) $(OBJS) ll3.o sort.o -o sort
 
 sort-wp: $(SRCS) ll3.c sort.c
-	$(CC) $(SRCS) ll3.c sort.c -o sort-wp -fwhole-program -flto
+	$(CC) $(SRCS) $(CFLAGS) ll3.c sort.c -o sort-wp -fwhole-program -flto
 
 aa-test1: $(OBJS) ll3.o aa-test1.o
 	$(CC) $(OBJS) aa-test1.o -o aa-test1
 
 aa-test1-wp: $(SRCS) ll3.c aa-test1.c
-	$(CC) $(SRCS) ll3.c aa-test1.c -o aa-test1-wp -fwhole-program -flto
+	$(CC) $(SRCS) $(CFLAGS) ll3.c aa-test1.c -o aa-test1-wp -fwhole-program -flto
 
 clean:
 	rm *.o sort aa-test1 sort2 sort-wp aa-test1-wp sort2-wp nuniq
