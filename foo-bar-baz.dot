@@ -1,0 +1,8 @@
+digraph aa_tree {
+node [shape = record];
+node1 [label = "<f0> | <f1> baz|<f2> "];
+node2 [label = "<f0> | <f1> bar|<f2> "];
+"node1":f0 -> "node2":f1;
+node3 [label = "<f0> | <f1> foo|<f2> "];
+"node1":f2 -> "node3":f1;
+}
