@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-static int vasprintf(char **ret, const char *fmt, va_list ap)
+int vasprintf(char **ret, const char *fmt, va_list ap)
 {
     int n;
     va_list ap2;
