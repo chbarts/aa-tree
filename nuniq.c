@@ -49,6 +49,7 @@ static void usage(char *pname)
     puts("");
     puts("  -h, --help        Print this help");
     puts("  -v, --version     Print version information");
+    puts("  -d, --duplicates  Print duplicate lines to stdout");
     puts("");
     puts("Report bugs to <chbarts@gmail.com>.");
 }
@@ -73,10 +74,15 @@ static int comparator(void *left, void *right)
 }
 
 volatile int print = 1;
+static int d = 0;
 
 static int duplicate(void *orig, void *new)
 {
     char *ln = (char *) new;
+
+    if (1 == d) {
+       fprintf(stderr, "%s\n", ln);
+    }
 
     free(ln);
     print = 0;
@@ -124,6 +130,7 @@ int main(int argc, char *argv[])
     struct option longopts[] = {
         {"help", 0, 0, 0},
         {"version", 0, 0, 0},
+        {"duplicates", 0, 0, 0},
         {0, 0, 0, 0}
     };
 
@@ -152,6 +159,9 @@ int main(int argc, char *argv[])
                 version();
                 return 0;
                 break;
+            case 2:
+                d = 1;
+                break;
             default:
                 usage(pnam);
                 exit(EXIT_FAILURE);
@@ -166,6 +176,9 @@ int main(int argc, char *argv[])
         case 'v':
             version();
             return 0;
+            break;
+        case 'd':
+            d = 1;
             break;
         default:
             usage(pnam);
