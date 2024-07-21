@@ -49,7 +49,7 @@ static void usage(char *pname)
     puts("");
     puts("  -h, --help        Print this help");
     puts("  -v, --version     Print version information");
-    puts("  -d, --duplicates  Print duplicate lines to stdout");
+    puts("  -d, --duplicates  Print duplicate lines to stderr");
     puts("");
     puts("Report bugs to <chbarts@gmail.com>.");
 }
