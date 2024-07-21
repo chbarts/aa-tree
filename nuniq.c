@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
 
     pnam = argv[0];
 
-    while ((c = getopt_long(argc, argv, "hv", longopts, &lind)) != -1) {
+    while ((c = getopt_long(argc, argv, "hvd", longopts, &lind)) != -1) {
         switch (c) {
         case 0:
             switch (lind) {
