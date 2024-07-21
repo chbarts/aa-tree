@@ -73,7 +73,7 @@ static int comparator(void *left, void *right)
     return r;
 }
 
-volatile int print = 1;
+static int print = 1;
 static int d = 0;
 
 static int duplicate(void *orig, void *new)
