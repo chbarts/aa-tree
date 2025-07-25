@@ -15,7 +15,7 @@ struct aa {
     struct node *root;
     struct node *cursor;
     ftype comp;
-    jump_buf env;
+    jmp_buf env;
 };
 
 aa *aa_new(ftype comp)
@@ -78,7 +78,7 @@ static struct node *split(struct node *t)
 }
 
 static struct node *insert(struct node *t, void *data, ftype dup,
-                           ftype comp, jump_buf env)
+                           ftype comp, jmp_buf env)
 {
     if (t == NULL) {
         if ((t = malloc(sizeof(struct node))) == NULL) {
@@ -173,7 +173,7 @@ static void *successor(struct node *t)
 }
 
 static struct node *delete(struct node *t, void *data, ftype dup,
-                           ftype comp, void (*del) (void *), jump_buf env)
+                           ftype comp, void (*del) (void *), jmp_buf env)
 {
     void *l;
 
