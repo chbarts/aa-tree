@@ -91,9 +91,9 @@ static struct node *insert(struct node *t, void *data, ftype dup,
         t->right = NULL;
         return t;
     } else if (comp(data, t->data) == -1) {
-        t->left = insert(t->left, data, dup, comp);
+        t->left = insert(t->left, data, dup, comp, env);
     } else if (comp(data, t->data) == 1) {
-        t->right = insert(t->right, data, dup, comp);
+        t->right = insert(t->right, data, dup, comp, env);
     } else if (dup == NULL) {
         longjmp(env, 3);
     } else {
@@ -180,9 +180,9 @@ static struct node *delete(struct node *t, void *data, ftype dup,
     if (t == NULL) {
         return NULL;
     } else if (comp(data, t->data) == -1) {
-        t->left = delete(t->left, data, dup, comp, del);
+        t->left = delete(t->left, data, dup, comp, del, env);
     } else if (comp(data, t->data) == 1) {
-        t->right = delete(t->right, data, dup, comp, del);
+        t->right = delete(t->right, data, dup, comp, del, env);
     } else if (dup != NULL) {
         if (dup(t->data, data) == 0) {
             return t;
@@ -199,14 +199,14 @@ static struct node *delete(struct node *t, void *data, ftype dup,
             return NULL;
         } else if (t->left == NULL) {
             l = successor(t);
-            t->right = delete(t->right, l, dup, comp, del);
+            t->right = delete(t->right, l, dup, comp, del, env);
             if (del)
                 del(t->data);
 
             t->data = l;
         } else {
             l = predecessor(t);
-            t->left = delete(t->left, l, dup, comp, del);
+            t->left = delete(t->left, l, dup, comp, del, env);
             if (del)
                 del(t->data);
 
