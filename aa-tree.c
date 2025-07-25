@@ -4,8 +4,6 @@
 
 typedef int (*ftype) (void *, void *);
 
-static jmp_buf env;
-
 struct node {
     int level;
     void *data;
@@ -17,6 +15,7 @@ struct aa {
     struct node *root;
     struct node *cursor;
     ftype comp;
+    jump_buf env;
 };
 
 aa *aa_new(ftype comp)
@@ -79,7 +78,7 @@ static struct node *split(struct node *t)
 }
 
 static struct node *insert(struct node *t, void *data, ftype dup,
-                           ftype comp)
+                           ftype comp, jump_buf env)
 {
     if (t == NULL) {
         if ((t = malloc(sizeof(struct node))) == NULL) {
@@ -117,8 +116,8 @@ int aa_add(aa * tree, void *data, int (*dup) (void *orig, void *new))
     if (tree == NULL)
         return 1;
 
-    if ((rval = setjmp(env)) == 0) {
-        tree->root = insert(tree->root, data, dup, tree->comp);
+    if ((rval = setjmp(tree->env)) == 0) {
+        tree->root = insert(tree->root, data, dup, tree->comp, tree->env);
     } else {
         return rval;
     }
@@ -174,7 +173,7 @@ static void *successor(struct node *t)
 }
 
 static struct node *delete(struct node *t, void *data, ftype dup,
-                           ftype comp, void (*del) (void *))
+                           ftype comp, void (*del) (void *), jump_buf env)
 {
     void *l;
 
@@ -232,8 +231,8 @@ int aa_delete(aa * tree, void *data, int (*dup) (void *orig, void *data),
     if (tree == NULL)
         return 1;
 
-    if ((rval = setjmp(env)) == 0) {
-        tree->root = delete(tree->root, data, dup, tree->comp, del);
+    if ((rval = setjmp(tree->env)) == 0) {
+        tree->root = delete(tree->root, data, dup, tree->comp, del, tree->env);
     } else {
         return rval;
     }
